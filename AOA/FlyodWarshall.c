@@ -85,14 +85,49 @@ int Parent_matrix[10][10];
 
 void printtable(int num_nodes)
 {
+    // printf("\n _______________________________________________________________________________");
+    // printf("\n|               |               |               |               |               |");
+    // printf("\n|   Time Slot   |     Job No.   |    Profit     |   Deadline    |  Total Profit |");
+    // printf("\n|_______________|_______________|_______________|_______________|_______________|\t");
+    // printf("\n|               |               |               |               |               |");
     printf("\n");
+    for (int i = 0; i <= num_nodes; i++)
+    {
+        printf(" _______");
+    }
+    printf("\n|");
+    for (int i = 0; i <= num_nodes; i++)
+    {
+        printf("       |");
+    }
+    printf("\n|       |");
+    for (int i = 0; i < num_nodes; i++)
+    {
+        printf("   %c   |", i + 65);
+    }
+    printf("\n|");
+    for (int i = 0; i <= num_nodes; i++)
+    {
+        printf("_______|");
+    }
+    printf("\n|");
+    for (int i = 0; i <= num_nodes; i++)
+    {
+        printf("       |");
+    }
+
     for (int i = 1; i <= num_nodes; i++)
     {
+        printf("\n|   %c   |", i + 64);
         for (int j = 1; j <= num_nodes; j++)
         {
-            printf(" %d ", a[i][j]);
+            printf(" %4d  |", a[i][j]);
         }
-        printf("\n");
+    }
+    printf("\n|");
+    for (int i = 0; i <= num_nodes; i++)
+    {
+        printf("_______|");
     }
 }
 
@@ -113,6 +148,24 @@ int mindist(int initial, int new1, int new2)
         return initial;
     }
 }
+int mindistbool(int i, int j, int k)
+{
+    // a[i][j] = mindist(a[i][j], a[i][k], a[k][j]);
+
+    int new_distance;
+    if (a[i][k] == INT_MAX || a[k][j] == INT_MAX)
+    {
+        return 0;
+    }
+    if (a[i][k] + a[k][j] < a[i][j])
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
 
 void floydWrshl(int num_nodes)
 {
@@ -127,6 +180,8 @@ void floydWrshl(int num_nodes)
         }
         // printtable(num_nodes);
     }
+    printf("\nInitial Matrix");
+    printtable(num_nodes);
 
     for (int k = 1; k <= num_nodes; k++)
     {
@@ -134,25 +189,30 @@ void floydWrshl(int num_nodes)
         {
             if (i == k)
             {
-                printf("\nI == K , i = %d , k = %d", i, k);
+                // printf("\nI == K , i = %d , k = %d  SKIP", i, k);
                 continue;
             }
             for (int j = 1; j <= num_nodes; j++)
             {
                 if (j == k)
                 {
-                    printf("\nJ == K , j = %d , k = %d", j, k);
+                    // printf("\nJ == K , j = %d , k = %d SKIP", j, k);
 
                     continue;
                 }
                 if (i == j || i == k || j == k)
                 {
-                    printf("\nI == J , i = %d , j = %d", i, j);
+                    // printf("\nI == J , i = %d , j = %d SKIP", i, j);
 
                     continue;
                 }
-                a[i][j] = mindist(a[i][j], a[i][k], a[k][j]);
-                printf("\na[i][j] = a[%d][%d] = %d", i, j, a[i][j]);
+                // a[i][j] = mindist(a[i][j], a[i][k], a[k][j]);
+                printf("\n\na[%d][%d] = %d \na[%d][%d] = %d + %d = %d", i, j, a[i][j], i, j, a[i][k], a[k][j], a[i][k] + a[k][j]);
+                if (mindistbool(i, j, k))
+                {
+                    a[i][j] = a[i][k] + a[k][j];
+                }
+                printf("\n a[%d][%d] = %d", i, j, a[i][j]);
             }
         }
         printtable(num_nodes);
@@ -178,6 +238,8 @@ int main()
         }
     }
     floydWrshl(num_nodes);
+    printf("\n\n\nFinal Shortest paths for all pairs : ");
+    printtable(num_nodes);
 
     return 0;
 }
